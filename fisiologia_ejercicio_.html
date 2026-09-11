@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fisiología del ejercicio | Grado 11°</title>
+<style>
+:root{
+  --bg:#f4f7fb; --card:#fff; --text:#172033; --muted:#667085;
+  --primary:#2563eb; --primary2:#1d4ed8; --ok:#15803d; --bad:#b91c1c;
+  --border:#dbe3ef; --shadow:0 12px 35px rgba(31,41,55,.10);
+}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#eef5ff,#f8fafc);color:var(--text)}
+.container{max-width:1050px;margin:auto;padding:28px 18px 50px}
+header{background:linear-gradient(135deg,#1e3a8a,#2563eb);color:white;border-radius:24px;padding:30px;box-shadow:var(--shadow);margin-bottom:22px}
+.badge{display:inline-block;background:rgba(255,255,255,.16);padding:7px 12px;border-radius:999px;font-size:.85rem;margin-bottom:12px}
+h1{margin:0 0 8px;font-size:clamp(1.8rem,4vw,2.8rem)} header p{margin:0;opacity:.92;line-height:1.55}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:18px 0 8px;font-weight:700}
+.progress{height:12px;background:#dce5f2;border-radius:20px;overflow:hidden}.progress span{display:block;height:100%;background:linear-gradient(90deg,#2563eb,#38bdf8);width:0%;transition:.35s}
+.card{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:28px;box-shadow:var(--shadow);margin-top:18px}
+.question-number{color:var(--primary);font-weight:800;text-transform:uppercase;font-size:.82rem;letter-spacing:.08em}
+h2{font-size:1.35rem;line-height:1.45;margin:10px 0 16px}.scenario{background:#f1f5f9;border-left:5px solid #60a5fa;padding:17px;border-radius:12px;line-height:1.6;margin-bottom:20px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}.option{padding:16px;border:2px solid var(--border);background:white;border-radius:14px;text-align:left;font-size:1rem;cursor:pointer;transition:.2s;color:var(--text)}
+.option:hover:not(:disabled){border-color:#60a5fa;transform:translateY(-1px)}.option:disabled{cursor:default}
+.option.correct{border-color:#86efac;background:#f0fdf4}.option.incorrect{border-color:#fca5a5;background:#fef2f2}
+.feedback{display:none;margin-top:18px;padding:16px;border-radius:14px;line-height:1.55}.feedback.show{display:block}.feedback.ok{background:#f0fdf4;color:#166534}.feedback.bad{background:#fef2f2;color:#991b1b}
+.controls{display:flex;justify-content:space-between;align-items:center;margin-top:22px;gap:10px}.score{font-weight:800}.btn{border:0;border-radius:12px;padding:12px 18px;background:var(--primary);color:white;font-weight:800;cursor:pointer}.btn:hover{background:var(--primary2)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.result{text-align:center}.result .big{font-size:3.8rem;font-weight:900;color:var(--primary);margin:10px}.result p{line-height:1.6;color:var(--muted)}.hidden{display:none}
+.small{font-size:.9rem;color:var(--muted)}
+@media(max-width:700px){.options{grid-template-columns:1fr}.card{padding:20px}header{padding:24px}.controls{flex-direction:column;align-items:stretch}.btn{width:100%}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <span class="badge">Actividad interactiva · Grado 11°</span>
+  <h1>¿Qué es la fisiología del ejercicio?</h1>
+  <p>Analiza situaciones reales, interpreta respuestas del organismo y toma decisiones fundamentadas. No se trata solo de recordar conceptos: debes explicar <strong>por qué</strong> ocurre cada respuesta.</p>
+</header>
+
+<div id="quiz">
+  <div class="topbar"><span id="progressText">Situación 1 de 10</span><span id="scoreTop">Puntuación: 0</span></div>
+  <div class="progress"><span id="bar"></span></div>
+  <div class="card">
+    <div class="question-number" id="qnum"></div>
+    <h2 id="question"></h2>
+    <div class="scenario" id="scenario"></div>
+    <div class="options" id="options"></div>
+    <div id="feedback" class="feedback"></div>
+    <div class="controls">
+      <span class="small" id="status">Selecciona la opción que consideres mejor fundamentada.</span>
+      <button class="btn" id="next" disabled>Siguiente situación →</button>
+    </div>
+  </div>
+</div>
+
+<div id="result" class="card result hidden">
+  <div class="question-number">Actividad finalizada</div>
+  <h2>Tu resultado</h2>
+  <div class="big" id="finalScore"></div>
+  <p id="finalMessage"></p>
+  <button class="btn" onclick="restart()">Reiniciar actividad</button>
+</div>
+</div>
+
+<script>
+const questions = [
+{q:"Durante una carrera de 800 metros, una estudiante comienza a respirar más rápido y siente que su corazón late con mayor intensidad. ¿Cuál interpretación explica mejor lo que está ocurriendo?",s:"El organismo necesita mantener el suministro de oxígeno y nutrientes a los músculos activos y, al mismo tiempo, eliminar productos del metabolismo.",o:["El corazón y los pulmones dejan de funcionar de manera coordinada para ahorrar energía.","La respiración y la frecuencia cardiaca aumentan para responder a la mayor demanda metabólica de los músculos.","El aumento de la respiración demuestra que los músculos ya no necesitan oxígeno.","El corazón late más rápido principalmente para elevar la temperatura corporal."],a:1,f:"Correcto. Durante el ejercicio aumenta la demanda energética. Los sistemas respiratorio y cardiovascular ajustan su funcionamiento para facilitar el aporte de oxígeno y la eliminación de dióxido de carbono."},
+{q:"Un estudiante inicia un entrenamiento de fuerza después de varias semanas sin practicar. En las primeras sesiones termina muy fatigado, pero semanas después puede realizar una carga similar con menor esfuerzo. ¿Qué concepto explica mejor el cambio?",s:"El organismo recibe un estímulo repetido y dispone de periodos adecuados para recuperarse.",o:["Adaptación: el organismo modifica su funcionamiento y capacidad para responder de manera más eficiente al estímulo.","Fatiga permanente: el cuerpo aprende a ignorar las señales de cansancio.","Deshidratación progresiva: perder agua mejora automáticamente la fuerza.","Homeostasis: significa que el organismo nunca cambia ante un estímulo."],a:0,f:"Correcto. La adaptación es una respuesta al entrenamiento. Cuando el estímulo es apropiado y existe recuperación, pueden producirse cambios que mejoran el rendimiento o la tolerancia al esfuerzo."},
+{q:"En una clase de educación física, dos estudiantes realizan el mismo circuito. Uno termina jadeando y necesita más tiempo para recuperarse; el otro recupera la respiración rápidamente. ¿Qué conclusión es científicamente más adecuada?",s:"Ambos realizaron la misma tarea externa, pero sus respuestas fisiológicas fueron diferentes.",o:["El estudiante que jadea más necesariamente tiene peor condición física.","Las respuestas fisiológicas pueden variar entre personas debido a su nivel de entrenamiento, características individuales y estado del organismo.","El que se recupera rápido no realizó ningún trabajo muscular.","La diferencia demuestra que solo la edad determina la respuesta al ejercicio."],a:1,f:"Correcto. Una misma carga externa no produce necesariamente la misma respuesta interna. La fisiología del ejercicio estudia precisamente esas respuestas y los factores que las modifican."},
+{q:"Una atleta aumenta bruscamente la duración y la intensidad de sus entrenamientos porque quiere mejorar más rápido. Después de varios días presenta cansancio persistente y disminución del rendimiento. ¿Qué decisión sería más coherente con los principios de recuperación?",s:"El rendimiento depende de la relación entre estímulo, recuperación y adaptación.",o:["Aumentar todavía más la carga para obligar al organismo a adaptarse.","Eliminar para siempre cualquier actividad física.","Introducir recuperación suficiente y revisar la progresión de la carga antes de continuar aumentando el entrenamiento.","Ignorar el cansancio porque la fatiga siempre indica una adaptación positiva."],a:2,f:"Correcto. La recuperación permite restaurar recursos y favorecer la adaptación. Aumentar la carga sin considerar la recuperación puede reducir el rendimiento y aumentar el riesgo de problemas asociados al exceso de entrenamiento."},
+{q:"Durante un partido de fútbol, un jugador realiza un sprint y luego disminuye su velocidad. ¿Por qué puede disminuir temporalmente su capacidad para repetir el esfuerzo máximo?",s:"Los esfuerzos intensos utilizan rápidamente recursos energéticos y generan cambios metabólicos que requieren recuperación.",o:["Porque los músculos dejan de recibir cualquier señal nerviosa.","Porque el organismo necesita recuperar recursos y restablecer condiciones internas después del esfuerzo intenso.","Porque el oxígeno desaparece completamente de la sangre.","Porque correr rápido destruye inmediatamente todas las fibras musculares."],a:1,f:"Correcto. Tras un esfuerzo intenso, el organismo necesita recuperar recursos energéticos y restablecer el equilibrio interno. La recuperación de la capacidad de esfuerzo ocurre de forma progresiva."},
+{q:"Una estudiante vive en una ciudad de clima muy caluroso. Durante una caminata prolongada comienza a sudar más y decide beber agua. ¿Cuál es la mejor explicación?",s:"El calor ambiental modifica las exigencias de regulación de la temperatura corporal durante el ejercicio.",o:["La sudoración es una respuesta que contribuye a disipar calor, y la hidratación ayuda a mantener el equilibrio de líquidos.","Sudar significa que el organismo está eliminando exclusivamente grasa corporal.","Beber agua impide por completo que aumente la temperatura corporal.","La sudoración demuestra que el sistema cardiovascular deja de participar."],a:0,f:"Correcto. La sudoración ayuda a disipar calor mediante la evaporación. Mantener una adecuada disponibilidad de líquidos contribuye a la regulación fisiológica, especialmente en ambientes calurosos."},
+{q:"Un estudiante cree que, para mejorar su resistencia, debe entrenar siempre a máxima intensidad. ¿Qué argumento cuestiona mejor esa idea?",s:"El entrenamiento eficaz debe considerar objetivos, intensidad, volumen, recuperación y características individuales.",o:["La máxima intensidad siempre produce las mejores adaptaciones.","La resistencia no depende del entrenamiento, sino únicamente de la genética.","La adaptación depende de una adecuada dosificación del estímulo y de la recuperación; no todos los entrenamientos deben realizarse al máximo.","La única forma de mejorar es aumentar el tiempo de entrenamiento sin importar la intensidad."],a:2,f:"Correcto. La carga de entrenamiento debe dosificarse. Alternar intensidades y respetar la recuperación permite estimular adaptaciones sin convertir cada sesión en un esfuerzo máximo."},
+{q:"Durante una actividad aeróbica moderada, una estudiante puede hablar con cierta dificultad, pero no está completamente sin aliento. ¿Qué información sería más útil para valorar la intensidad?",s:"La percepción del esfuerzo puede complementar otros indicadores fisiológicos y contextuales.",o:["Solo el color de la camiseta.","La percepción subjetiva del esfuerzo, junto con variables como frecuencia cardiaca y características de la actividad.","El número de personas que participan en la clase.","La estatura, sin considerar ningún otro dato."],a:1,f:"Correcto. La percepción del esfuerzo es una herramienta útil para interpretar la intensidad, especialmente cuando se combina con otros indicadores y con el contexto de la actividad."},
+{q:"Después de varias semanas de entrenamiento aeróbico progresivo, un estudiante puede recorrer la misma distancia y termina menos fatigado. ¿Cuál inferencia es más razonable?",s:"El cambio aparece después de una exposición repetida a un estímulo de entrenamiento.",o:["El organismo probablemente ha desarrollado adaptaciones que mejoran la eficiencia de la respuesta al ejercicio.","El ejercicio necesariamente redujo todas sus capacidades físicas.","La menor fatiga demuestra que el organismo dejó de utilizar energía.","La adaptación significa que el corazón ya no necesita trabajar durante el ejercicio."],a:0,f:"Correcto. Una menor percepción de esfuerzo ante una tarea similar puede ser compatible con adaptaciones al entrenamiento, aunque una evaluación completa requiere más información."},
+{q:"Una docente quiere enseñar fisiología del ejercicio sin convertir la clase en una lista de definiciones. ¿Cuál actividad representa mejor este enfoque?",s:"El propósito es desarrollar razonamiento científico a partir de respuestas del organismo.",o:["Memorizar diez definiciones y repetirlas literalmente.","Resolver una situación en la que se comparen respuestas cardiacas, respiratorias y de recuperación, justificando las posibles causas.","Copiar un texto sobre el sistema muscular sin analizarlo.","Aprender únicamente los nombres de los órganos involucrados."],a:1,f:"Correcto. Analizar evidencias, relacionar sistemas y justificar explicaciones permite comprender la fisiología del ejercicio como un campo aplicado y no solo como memorización."}
+];
+
+let current=0, score=0, answered=false;
+const $=id=>document.getElementById(id);
+function render(){
+  const x=questions[current]; answered=false;
+  $("progressText").textContent=`Situación ${current+1} de ${questions.length}`;
+  $("scoreTop").textContent=`Puntuación: ${score}`;
+  $("bar").style.width=((current)/questions.length*100)+"%";
+  $("qnum").textContent=`Situación problema ${current+1}`;
+  $("question").textContent=x.q; $("scenario").textContent=x.s;
+  $("options").innerHTML="";
+  x.o.forEach((txt,i)=>{
+    const b=document.createElement("button"); b.className="option"; b.textContent=`${String.fromCharCode(65+i)}. ${txt}`;
+    b.onclick=()=>answer(i); $("options").appendChild(b);
+  });
+  $("feedback").className="feedback"; $("feedback").textContent="";
+  $("next").disabled=true; $("next").textContent=current===questions.length-1?"Ver resultado":"Siguiente situación →";
+  $("status").textContent="Selecciona la opción que consideres mejor fundamentada.";
+}
+function answer(i){
+  if(answered)return; answered=true;
+  const x=questions[current], buttons=[...document.querySelectorAll(".option")];
+  buttons.forEach(b=>b.disabled=true);
+  buttons[x.a].classList.add("correct");
+  const fb=$("feedback");
+  if(i===x.a){score++; fb.className="feedback show ok"; fb.innerHTML="<strong>✓ Correcto.</strong> "+x.f;}
+  else {buttons[i].classList.add("incorrect"); fb.className="feedback show bad"; fb.innerHTML="<strong>✗ Revisa tu razonamiento.</strong> "+x.f;}
+  $("scoreTop").textContent=`Puntuación: ${score}`;
+  $("next").disabled=false; $("status").textContent="Respuesta registrada. Lee la retroalimentación antes de continuar.";
+  $("bar").style.width=((current+1)/questions.length*100)+"%";
+}
+$("next").onclick=()=>{if(!answered)return;if(current<questions.length-1){current++;render()}else finish()};
+function finish(){
+  $("quiz").classList.add("hidden"); $("result").classList.remove("hidden");
+  const pct=score/questions.length*100;
+  $("finalScore").textContent=`${score}/10`;
+  $("finalMessage").textContent=pct>=90?"Excelente desempeño. Integraste respuestas fisiológicas, adaptación y recuperación para resolver situaciones problema."
+    :pct>=70?"Buen desempeño. Comprendes los conceptos centrales; continúa fortaleciendo la explicación causal de las respuestas del organismo."
+    :pct>=50?"Desempeño en desarrollo. Revisa la relación entre ejercicio, demanda energética, respuestas fisiológicas, adaptación y recuperación."
+    :"Conviene repasar los conceptos fundamentales y volver a analizar las situaciones, buscando explicar siempre por qué ocurre cada respuesta.";
+}
+function restart(){current=0;score=0;$("result").classList.add("hidden");$("quiz").classList.remove("hidden");render()}
+render();
+</script>
+</body>
+</html>
